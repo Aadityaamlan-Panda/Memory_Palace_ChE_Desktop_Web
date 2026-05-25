@@ -1,13 +1,12 @@
 # 🏛️ Memory Palace — Chemical Engineering Edition
 
-> **A Unity 6 application applying the Method of Loci to technical education.**  
-> Developed at the Department of Chemical Engineering, IIT Kanpur.  
-> Authors: Aaditya Amlan Panda (220007) · Abhijit Dalai (220030)
-
 <p align="center">
   <img src="docs/thumbnail.png" alt="Memory Palace Thumbnail" width="500">
 </p>
 
+> **A Unity 6 application applying the Method of Loci to technical education.**  
+> Developed at the Department of Chemical Engineering, IIT Kanpur.  
+> Authors: Aaditya Amlan Panda (220007) · Abhijit Dalai (220030)
 
 > **Note:** This is the **desktop / web build** of the project — it runs in the Unity Editor or as a standalone desktop application using a keyboard+mouse FPS rig, without requiring a VR headset. The full Meta Quest XR build lives in a separate private repository.
 
