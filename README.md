@@ -4,20 +4,17 @@
 > Developed at the Department of Chemical Engineering, IIT Kanpur.  
 > Authors: Aaditya Amlan Panda (220007) · Abhijit Dalai (220030)
 
-> **Note:** This is the **desktop / web build** of the project — it runs in the Unity Editor or as a standalone desktop application using a keyboard+mouse FPS rig, without requiring a VR headset. The full Meta Quest XR build lives in a separate private repository.
-
----
-
 <p align="center">
   <img src="docs/thumbnail.png" alt="Memory Palace Thumbnail" width="500">
 </p>
 
 
+> **Note:** This is the **desktop / web build** of the project — it runs in the Unity Editor or as a standalone desktop application using a keyboard+mouse FPS rig, without requiring a VR headset. The full Meta Quest XR build lives in a separate private repository.
+
 ---
 
 <!-- DEMO VIDEO: Replace the URL below with your YouTube or Google Drive link, then uncomment both lines -->
 <!-- [![Watch the Demo](docs/thumbnail.png)](https://your-video-link-here) -->
- 🎬 **Demo Video** 
 > https://github.com/user-attachments/assets/29a624de-cfeb-486e-a961-6cdc65e5a667
 
 ---
