@@ -273,4 +273,4 @@ Key third-party and Unity packages used (from `Packages/manifest.json`):
 
 ## License
 
-[Add your license here]
+[MIT LICENSE](LICENSE)
