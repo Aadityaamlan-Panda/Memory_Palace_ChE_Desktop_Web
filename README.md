@@ -8,6 +8,27 @@
 
 ---
 
+<!-- THUMBNAIL: Once you have a thumbnail, add it to a docs/ folder and replace the line below -->
+<!-- ![Memory Palace Thumbnail](docs/thumbnail.png) -->
+> 📸 **Thumbnail** — add your thumbnail as `docs/thumbnail.png` in the repo and uncomment the line above.
+
+---
+
+<!-- DEMO VIDEO: Replace the URL below with your YouTube or Google Drive link, then uncomment both lines -->
+<!-- [![Watch the Demo](docs/thumbnail.png)](https://your-video-link-here) -->
+> 🎬 **Demo Video** — paste your YouTube/Drive URL in place of `https://your-video-link-here` above and uncomment the line.
+
+---
+
+## 🌐 Play in Browser
+
+**[▶ Launch WebGL Build on Unity Play →](https://play.unity.com/en/games/55443ff9-9eae-408c-b50d-544cd201342a/memorypalacewebgldesktopchemengg)**
+
+> The backend may take up to 60 s to wake up on first load (free-tier cold start). Concepts will appear automatically once the server responds. A local CSV fallback activates if the backend is unreachable.
+
+---
+
+
 ## 📖 Table of Contents
 
 - [Overview](#overview)
@@ -408,4 +429,4 @@ The following students from IIT Kanpur volunteered to participate in the pilot s
 
 ## License
 
-[MIT LICENSE](LICENSE)
+[MIT License](LICENSE)
