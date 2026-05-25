@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Palace Review</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --surface: #111118;
+        --surface2: #1a1a24;
+        --border: #2a2a38;
+        --text: #e8e8f0;
+        --muted: #666680;
+        --accent: #7b6cff;
+        --accent2: #ff6c9d;
+        --green: #2ecc71;
+        --yellow: #f1c40f;
+        --red: #e74c3c;
+        --green-dim: rgba(46, 204, 113, 0.12);
+        --yellow-dim: rgba(241, 196, 15, 0.12);
+        --red-dim: rgba(231, 76, 60, 0.12);
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(10, 10, 15, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        height: 64px;
+        flex-wrap: wrap;
+      }
+
+      .header .filter-row { margin-bottom: 0; display: flex; flex-wrap: nowrap; gap: 8px; }
+      .header-actions { margin-left: auto; display: flex; flex-wrap: nowrap; }
+      .header .filter-btn { white-space: nowrap; }
+
+      .logo {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        flex-shrink: 0;
+      }
+
+      .stats-bar { display: flex; gap: 20px; margin-left: auto; flex-shrink: 0; }
+
+      .stat { display: flex; flex-direction: column; align-items: center; font-family: "Space Mono", monospace; }
+      .stat-value { font-size: 16px; font-weight: 700; color: var(--accent); }
+      .stat-label { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-family: "Syne", sans-serif; }
+
+      .search-wrap { flex: 1; max-width: 320px; }
+      .search-input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        font-size: 13px;
+        padding: 8px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-input::placeholder { color: var(--muted); }
+      .search-input:focus { border-color: var(--accent); }
+
+      .main { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+
+      .section-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+      .legend { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+      .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+      .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 10px;
+        display: grid;
+        grid-template-columns: 36px 1fr auto auto;
+        align-items: center;
+        gap: 16px;
+        transition: border-color 0.2s, transform 0.15s, background 0.2s;
+        position: relative;
+        overflow: visible;
+      }
+      .card:hover { border-color: var(--accent); background: var(--surface2); transform: translateX(2px); }
+      .card::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        border-radius: 14px 0 0 14px;
+        background: var(--accent);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .card:hover::before { opacity: 1; }
+
+      .rank { font-family: "Space Mono", monospace; font-size: 11px; color: var(--muted); text-align: center; line-height: 1; }
+
+      .card-body { min-width: 0; }
+      .card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .card-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+      .meta-item { font-family: "Space Mono", monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+      .meta-item span { color: var(--text); opacity: 0.7; }
+
+      .priority-badge {
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        white-space: nowrap;
+        text-align: center;
+        min-width: 60px;
+      }
+
+      .traffic-lights { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+      .tl-btn {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+        position: relative;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0;
+      }
+      .tl-btn::after { content: ""; width: 14px; height: 14px; border-radius: 50%; display: block; }
+
+      .tl-btn.green { background: var(--green-dim); border-color: rgba(46,204,113,0.3); }
+      .tl-btn.green::after { background: var(--green); box-shadow: 0 0 8px var(--green); }
+      .tl-btn.green:hover { transform: scale(1.15); box-shadow: 0 0 20px rgba(46,204,113,0.4); border-color: var(--green); }
+
+      .tl-btn.yellow { background: var(--yellow-dim); border-color: rgba(241,196,15,0.3); }
+      .tl-btn.yellow::after { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+      .tl-btn.yellow:hover { transform: scale(1.15); box-shadow: 0 0 20px rgba(241,196,15,0.4); border-color: var(--yellow); }
+
+      .tl-btn.red { background: var(--red-dim); border-color: rgba(231,76,60,0.3); }
+      .tl-btn.red::after { background: var(--red); box-shadow: 0 0 8px var(--red); }
+      .tl-btn.red:hover { transform: scale(1.15); box-shadow: 0 0 20px rgba(231,76,60,0.4); border-color: var(--red); }
+      .tl-btn:active { transform: scale(0.92); }
+
+      @keyframes flash-green { 0%,100%{background:var(--surface)} 30%{background:var(--green-dim);border-color:var(--green)} }
+      @keyframes flash-yellow { 0%,100%{background:var(--surface)} 30%{background:var(--yellow-dim);border-color:var(--yellow)} }
+      @keyframes flash-red { 0%,100%{background:var(--surface)} 30%{background:var(--red-dim);border-color:var(--red)} }
+
+      .flash-green { animation: flash-green 0.6s ease; }
+      .flash-yellow { animation: flash-yellow 0.6s ease; }
+      .flash-red { animation: flash-red 0.6s ease; }
+
+      .empty { text-align: center; padding: 60px 0; color: var(--muted); font-size: 14px; }
+
+      [data-tip] { position: relative; }
+      [data-tip]:hover::before {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #222230;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 11px;
+        white-space: nowrap;
+        color: var(--text);
+        pointer-events: none;
+        z-index: 200;
+      }
+
+      .filter-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+      .filter-btn {
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Syne", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        letter-spacing: 0.5px;
+      }
+      .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(123,108,255,0.08); }
+
+      .count-badge {
+        display: inline-block;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 6px;
+        color: var(--muted);
+        margin-left: auto;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 28px; right: 28px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-size: 13px;
+        color: var(--text);
+        z-index: 999;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 280px;
+      }
+      .toast.show { transform: translateY(0); opacity: 1; }
+      .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+      @media (max-width: 640px) {
+        .header { padding: 0 16px; gap: 12px; }
+        .stats-bar { gap: 12px; }
+        .stat-value { font-size: 14px; }
+        .main { padding: 20px 16px 60px; }
+        .card { grid-template-columns: 28px 1fr; grid-template-rows: auto auto; gap: 10px; }
+        .traffic-lights { grid-column: 2; }
+        .priority-badge { grid-column: 1 / -1; width: fit-content; }
+        .card-title { font-size: 13px; }
+        .logo { font-size: 14px; }
+        .search-wrap { max-width: 160px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">MEMORY PALACE</div>
+      <div class="search-wrap">
+        <input class="search-input" type="text" id="searchInput" placeholder="Search concepts…" />
+      </div>
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value" id="statTotal">—</div>
+          <div class="stat-label">Total</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="statReviewed">—</div>
+          <div class="stat-label">Reviewed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="statAvgStrength">—</div>
+          <div class="stat-label">Avg Strength</div>
+        </div>
+      </div>
+      <div class="filter-row" style="margin-left: auto">
+        <button class="filter-btn" onclick="downloadData()">☣ Save</button>
+        <button class="filter-btn" onclick="exportSortedList()">📋 Export List</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="section-label">Review Queue</div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="unreviewed">Unreviewed</button>
+        <button class="filter-btn" data-filter="weak">Weak (&lt;0)</button>
+        <button class="filter-btn" data-filter="strong">Strong (&gt;3)</button>
+        <span class="count-badge" id="countBadge">— cards</span>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--green)"></div>
+          Easy recall (+2 strength)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--yellow)"></div>
+          Medium recall (+1 strength)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--red)"></div>
+          Tough recall (−2 strength)
+        </div>
+      </div>
+
+      <div id="cardList"></div>
+    </main>
+
+    <div class="toast" id="toast">
+      <div class="toast-dot" id="toastDot"></div>
+      <span id="toastMsg"></span>
+    </div>
+
+    <script>
+      // ── STATE ─────────────────────────────────────────────────────────────────────
+      let data = [];           // populated from backend via getAllSorted()
+      let currentFilter = "all";
+      let searchQuery = "";
+
+      // ── BACKEND API ───────────────────────────────────────────────────────────────
+
+      /**
+       * getAllSorted()
+       * Calls GET /concepts/all-sorted and returns the full list of concepts
+       * ordered by id ascending from the database.
+       * This is the primary function the frontend uses to extract the
+       * complete ascending-order list from the backend.
+       */
+      async function getAllSorted() {
+        const res = await fetch("/concepts/all-sorted");
+        if (!res.ok) throw new Error("Failed to fetch concepts");
+        return await res.json();  // returns List<Concept> in id-ascending order
+      }
+
+      /**
+       * patchReview(id, score)
+       * Calls PATCH /concepts/{id}/review with {score} in the body.
+       * The backend increments repetitions, adjusts strength, and sets lastReviewed.
+       * Returns the updated Concept.
+       */
+      async function patchReview(id, score) {
+        const res = await fetch(`/concepts/${id}/review`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ score }),
+        });
+        if (!res.ok) throw new Error("Failed to update review");
+        return await res.json();
+      }
+
+      // ── INIT ──────────────────────────────────────────────────────────────────────
+      async function init() {
+        try {
+          const raw = await getAllSorted();
+          // Map backend Concept fields → local shape (id stays numeric Long → Number)
+          data = raw.map(c => ({
+            id: c.id,
+            title: c.title,
+            memoryObject: c.memoryObject || "—",
+            strength: c.strength ?? 0,
+            repetitions: c.repetitions ?? 0,
+            lastReviewed: c.lastReviewed || null,   // ISO string or null
+          }));
+          render();
+        } catch (err) {
+          console.error("Init error:", err);
+          document.getElementById("cardList").innerHTML =
+            '<div class="empty">⚠ Could not load concepts from server. Is the backend running?</div>';
+        }
+      }
+
+      // ── LOGIC ─────────────────────────────────────────────────────────────────────
+      function priority(item) {
+        return item.strength - item.repetitions * 0.5;
+      }
+
+      function priorityScore(item) {
+        return priority(item).toFixed(1);
+      }
+
+      function formatDate(iso) {
+        if (!iso) return "Never";
+        const d = new Date(iso);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 60000);
+        if (diff < 1) return "Just now";
+        if (diff < 60) return `${diff}m ago`;
+        if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
+        return `${Math.floor(diff / 1440)}d ago`;
+      }
+
+      function getFiltered() {
+        let list = [...data];
+
+        if (currentFilter === "unreviewed")
+          list = list.filter(d => d.repetitions === 0);
+        else if (currentFilter === "weak")
+          list = list.filter(d => d.strength < 0);
+        else if (currentFilter === "strong")
+          list = list.filter(d => d.strength > 3);
+
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          list = list.filter(
+            d => d.title.toLowerCase().includes(q) ||
+                 (d.memoryObject && d.memoryObject.toLowerCase().includes(q))
+          );
+        }
+
+        list.sort((a, b) => priority(a) - priority(b));
+        return list;
+      }
+
+      // ── RENDER ────────────────────────────────────────────────────────────────────
+      function updateStats() {
+        const reviewed = data.filter(d => d.repetitions > 0).length;
+        const avgStr = data.length
+          ? (data.reduce((s, d) => s + d.strength, 0) / data.length).toFixed(1)
+          : 0;
+        document.getElementById("statTotal").textContent = data.length;
+        document.getElementById("statReviewed").textContent = reviewed;
+        document.getElementById("statAvgStrength").textContent = avgStr;
+      }
+
+      function render() {
+        const list = getFiltered();
+        document.getElementById("countBadge").textContent = `${list.length} cards`;
+        updateStats();
+
+        const container = document.getElementById("cardList");
+
+        if (list.length === 0) {
+          container.innerHTML = '<div class="empty">No concepts match this filter.</div>';
+          return;
+        }
+
+        container.innerHTML = list.map((item, i) => `
+          <div class="card" id="card-${item.id}">
+            <div class="rank">#${i + 1}</div>
+            <div class="card-body">
+              <div class="card-title" title="${item.title}">${item.title}</div>
+              <div class="card-meta">
+                <div class="meta-item">🧠 <span>${item.memoryObject}</span></div>
+                <div class="meta-item">↩ reps: <span>${item.repetitions}</span></div>
+                <div class="meta-item">💪 str: <span>${item.strength}</span></div>
+                <div class="meta-item">🕐 <span>${formatDate(item.lastReviewed)}</span></div>
+              </div>
+            </div>
+            <div class="priority-badge" data-tip="priority = strength − reps × 0.5">
+              P: ${priorityScore(item)}
+            </div>
+            <div class="traffic-lights">
+              <button class="tl-btn green" data-tip="Easy (score 2, +2 strength)" onclick="handleRecall(${item.id}, 2)"></button>
+              <button class="tl-btn yellow" data-tip="Medium (score 1, +1 strength)" onclick="handleRecall(${item.id}, 1)"></button>
+              <button class="tl-btn red" data-tip="Tough (score 0, −2 strength)" onclick="handleRecall(${item.id}, 0)"></button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // ── INTERACTIONS ──────────────────────────────────────────────────────────────
+      let toastTimer;
+
+      function showToast(msg, color) {
+        const t = document.getElementById("toast");
+        const dot = document.getElementById("toastDot");
+        const msgEl = document.getElementById("toastMsg");
+        dot.style.background = color;
+        msgEl.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+      }
+
+      window.handleRecall = async function(id, score) {
+        const colors = { 2: "var(--green)", 1: "var(--yellow)", 0: "var(--red)" };
+        const labels = { 2: "Easy recall — +2 strength", 1: "Medium recall — +1 strength", 0: "Tough recall — −2 strength" };
+        const flashClass = { 2: "flash-green", 1: "flash-yellow", 0: "flash-red" };
+
+        // Optimistic local update
+        const item = data.find(d => d.id === id);
+        if (item) {
+          if (score === 2) item.strength += 2;
+          else if (score === 1) item.strength += 1;
+          else item.strength -= 2;
+          item.repetitions += 1;
+          item.lastReviewed = new Date().toISOString();
+        }
+
+        const card = document.getElementById(`card-${id}`);
+        if (card) {
+          card.classList.add(flashClass[score]);
+          setTimeout(() => card.classList.remove(flashClass[score]), 700);
+        }
+
+        showToast(labels[score], colors[score]);
+        setTimeout(() => render(), 400);
+
+        // Persist to backend (fire-and-forget; errors show toast)
+        try {
+          await patchReview(id, score);
+        } catch (err) {
+          console.error("Review sync error:", err);
+          showToast("⚠ Sync failed — change saved locally only", "var(--red)");
+        }
+      };
+
+      // ── EXPORT / SAVE ─────────────────────────────────────────────────────────────
+
+      /**
+       * downloadData()
+       * Fetches the current ascending-order list from the backend via getAllSorted()
+       * and saves it as a JSON file to the user's Downloads folder.
+       */
+      async function downloadData() {
+        try {
+          const sorted = await getAllSorted();
+          const json = JSON.stringify(sorted, null, 2);
+          const blob = new Blob([json], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "memory_palace_save.json";
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast("Saved to Downloads", "var(--green)");
+        } catch (err) {
+          showToast("⚠ Could not fetch data from server", "var(--red)");
+        }
+      }
+
+      /**
+       * exportSortedList()
+       * Calls getAllSorted() and logs the complete ascending-order list to the
+       * browser console, and also shows the titles in a toast preview.
+       * This demonstrates how the frontend extracts the ordered list.
+       */
+      async function exportSortedList() {
+        try {
+          const sorted = await getAllSorted();
+          console.log("=== Ascending-Order Concept List ===");
+          sorted.forEach((c, i) => console.log(`${i + 1}. [id:${c.id}] ${c.title}`));
+          showToast(`📋 ${sorted.length} concepts logged to console`, "var(--accent)");
+        } catch (err) {
+          showToast("⚠ Could not fetch list from server", "var(--red)");
+        }
+      }
+
+      // Filters
+      document.querySelectorAll(".filter-btn[data-filter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".filter-btn[data-filter]").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentFilter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      // Search
+      document.getElementById("searchInput").addEventListener("input", e => {
+        searchQuery = e.target.value.trim();
+        render();
+      });
+
+      // Boot
+      init();
+    </script>
+  </body>
+</html>
