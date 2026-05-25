@@ -8,9 +8,7 @@
 
 ---
 
-<!-- THUMBNAIL: Once you have a thumbnail, add it to a docs/ folder and replace the line below -->
-<!-- ![Memory Palace Thumbnail](docs/thumbnail.png) -->
-> 📸 **Thumbnail** — add your thumbnail as `docs/thumbnail.png` in the repo and uncomment the line above.
+[Memory Palace Thumbnail](docs/thumbnail.png)
 
 ---
 
