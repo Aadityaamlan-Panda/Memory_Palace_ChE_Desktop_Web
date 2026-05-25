@@ -213,13 +213,12 @@ The project ships a **FPS desktop rig** (`XRSimpleRig.cs`) as a drop-in replacem
 | `Mouse` | Look around (cursor auto-locked; `Esc` to release, `RMB` to re-lock) |
 | `Q / E` | Fly up / down |
 | `F` | Interact with door, sliding panel, or teleport trigger |
-| `G` | Show concept **text labels** for the object in the crosshair |
-| `K` | Show concept **image panel** for the object in the crosshair |
+| `G` | Show concept **text labels and image panel** for the object in the crosshair |
 
 **Crosshair feedback:**
 
 - Left half **green** → a door/slide/teleport is in view
-- Right half **green** → a concept-linked object is in view
+- Right half **green** → a concept-linked object is in view (press `G` to reveal labels + panel)
 - Both halves dim → nothing interactive in range
 
 ---
