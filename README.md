@@ -8,7 +8,8 @@
 
 ---
 
-![Memory Palace Thumbnail](docs/thumbnail.png)
+<img src="docs/thumbnail.png" alt="Memory Palace Thumbnail" width="500">
+
 
 ---
 
