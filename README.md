@@ -17,8 +17,8 @@
 
 <!-- DEMO VIDEO: Replace the URL below with your YouTube or Google Drive link, then uncomment both lines -->
 <!-- [![Watch the Demo](docs/thumbnail.png)](https://your-video-link-here) -->
-> 🎬 **Demo Video** — paste your YouTube/Drive URL in place of `https://your-video-link-here` above and uncomment the line
-https://github.com/user-attachments/assets/29a624de-cfeb-486e-a961-6cdc65e5a667
+ 🎬 **Demo Video** 
+> https://github.com/user-attachments/assets/29a624de-cfeb-486e-a961-6cdc65e5a667
 
 ---
 
