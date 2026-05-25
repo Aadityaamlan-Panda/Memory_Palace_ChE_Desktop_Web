@@ -8,7 +8,9 @@
 
 ---
 
-<img src="docs/thumbnail.png" alt="Memory Palace Thumbnail" width="500">
+<p align="center">
+  <img src="docs/thumbnail.png" alt="Memory Palace Thumbnail" width="500">
+</p>
 
 
 ---
