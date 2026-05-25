@@ -8,7 +8,7 @@
 
 ---
 
-[Memory Palace Thumbnail](docs/thumbnail.png)
+![Memory Palace Thumbnail](docs/thumbnail.png)
 
 ---
 
